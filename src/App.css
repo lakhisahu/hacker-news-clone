@@ -1,0 +1,28 @@
+.navbar{
+    background-color: orangered !important;
+}
+.app{
+    margin-left: 50px;
+    margin-top: 10px;
+    
+}
+h3{
+    font-size: medium;
+    color: black;
+    
+}
+a{
+    text-decoration: none;
+}
+p{
+    margin-left: 15px;
+}
+.btn-secondary{
+    margin-left: 40px;
+}
+.app2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
