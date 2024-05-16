@@ -15,7 +15,7 @@ function App() {
   async function fetchData() {
     
     const data = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
-    if(count>0){
+    if(count>10){
       var result = data.data.slice(0, count)
     }else{
       var result = data.data.slice(0, 10)
