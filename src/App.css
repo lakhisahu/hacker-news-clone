@@ -26,3 +26,19 @@ p{
     justify-content: center;
     height: 100vh;
 }
+.search{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-right: 100px;
+    margin-top: 10px;
+    }
+input{
+   border-radius: 4px;
+   width: 200px;
+}
+i{
+    margin-right: 10px;
+    position: absolute;
+   
+}
