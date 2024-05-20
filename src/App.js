@@ -9,6 +9,7 @@ function App() {
   const [prevdate, setPrevdate] = useState(1)
   const [nextdate, setNextdate] = useState(1)
   const [search, setSearch] = useState('')
+  const [msg,setMsg] = useState("loading...")
   var counter = 0;
 
   useEffect(() => {
@@ -16,6 +17,7 @@ function App() {
     fetchData();
   }, [])
   async function fetchData() {
+    setMsg("loading...")
 
     const data = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
 
@@ -72,6 +74,7 @@ function App() {
   }
   async function prevDate() {
     setStories([])
+    setMsg("loading...")
     const data = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
 
     var result = data.data.slice(0, 100)
@@ -104,6 +107,7 @@ function App() {
   }
   async function nextDate() {
     setStories([])
+    setMsg("loading...")
     setPrevdate(prev=>prev-1);
     const data = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
 
@@ -147,6 +151,32 @@ function App() {
     var slicedData = filterData.slice(0, 10);
     setStories(slicedData)
   }
+  async function handleSearch(e) {
+    e.preventDefault()
+    setMsg("loading...")
+    setStories([])
+    const data = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
+   var story = data.data.map(async (e) => {
+      var newData = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${e}.json`)
+
+      return newData.data
+    })
+    var allstories = await Promise.all(story)
+    for (var i of allstories) {
+      i.time = i.time * 1000; //convert in milisecond
+    }
+   var result = allstories.filter(e =>{
+    if(e.title.toLowerCase().includes(search.toLowerCase())){
+      return e;
+    }else{
+      setMsg("No Record Found")
+
+    }
+    })
+   console.log(result);
+   setStories(result)
+
+  }
   return (
     <div className="App">
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -156,26 +186,20 @@ function App() {
             <span class="navbar-toggler-icon"></span>
           </button>
         </div>
-        <div className='search'>
+        <form className='search' onSubmit={handleSearch}>
           <input type='text' placeholder='search here'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
+          <button type="button" class="btn btn-outline-dark" onClick={handleSearch}>Search</button>
+        </form>
       </nav>
 
       {stories.length > 0 ?
         <div>
           {
-            stories?.filter(e => {
-              if (search == '') {
-                return e;
-              } else if (e.title.toLowerCase().includes(search.toLocaleLowerCase())) {
-                return e;
-              }
-            })
-              .map((e) => (
+            stories?.map((e) => (
                 <div className='app'>
                   <a href={e.url}>
                     <h3>
@@ -203,7 +227,7 @@ function App() {
             nextDate();
           }}>Next Date</button>
         </div> : <div className='app2'>
-          <h2 className='text-center flex'>Loading...</h2>
+          <h2 className='text-center flex'>{msg}</h2>
         </div>}
 
 
